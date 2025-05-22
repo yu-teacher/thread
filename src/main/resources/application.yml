@@ -1,44 +1,56 @@
+# 테스트용 설정 - 최소한의 로그만 출력
 spring:
+  profiles:
+    active: test
+
+  # 메인 애플리케이션 이름
   application:
-    name: virtual-thread
+    name: virtual-thread-test
 
-  # ?? ??? ???
-  threads:
-    virtual:
-      enabled: true
-
-  # H2 ?????? ??
+  # H2 인메모리 데이터베이스
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
     password:
 
-  # JPA ??
+  # JPA 설정 - 테스트용 최적화
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: create-drop
+    show-sql: false  # SQL 로그 비활성화
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
 
-  # H2 ?? ???
+  # H2 콘솔 비활성화 (테스트에서 불필요)
   h2:
     console:
-      enabled: true
-      path: /h2-console
+      enabled: false
 
-# ?? ??
+  # Thymeleaf 경고 제거
+  thymeleaf:
+    check-template-location: false
+
+# 핵심 로그만 출력하도록 설정
 logging:
   level:
-    root: INFO
-    com.hunnit_beasts.thread: INFO
-    org.hibernate.SQL: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    root: WARN                           # 기본 로그 레벨을 WARN으로 설정
+    com.hunnit_beasts.thread: INFO       # 우리 애플리케이션 로그만 INFO
+    org.springframework.boot: WARN       # Spring Boot 로그 최소화
+    org.springframework.web: WARN        # Spring Web 로그 최소화
+    org.springframework.test: WARN       # Spring Test 로그 최소화
+    org.hibernate: WARN                  # Hibernate 로그 최소화
+    org.hibernate.SQL: OFF               # SQL 로그 완전 비활성화
+    org.hibernate.orm.deprecation: OFF   # Hibernate 경고 비활성화
+    com.zaxxer.hikari: WARN              # HikariCP 로그 최소화
+    org.springframework.data: WARN       # Spring Data 로그 최소화
+    org.springframework.jpa: WARN        # JPA 로그 최소화
+    org.h2: WARN                         # H2 로그 최소화
 
-# ?? ??
+  pattern:
+    console: "%d{HH:mm:ss} %-5level %logger{20} - %msg%n"
+
+# 서버 포트 (테스트에서는 랜덤 포트 사용)
 server:
-  port: 8080
+  port: 0

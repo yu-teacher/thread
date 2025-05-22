@@ -5,14 +5,13 @@ import com.hunnit_beasts.thread.service.SynchronizationService;
 import com.hunnit_beasts.thread.util.ComparisonResult;
 import com.hunnit_beasts.thread.util.ExecutionResult;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -26,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("🔒 동기화 컨트롤러 테스트 - 가상 스레드 핀닝(Pinning) 현상 검증")
 class SynchronizationControllerTest {
 
     @Autowired
@@ -42,7 +42,7 @@ class SynchronizationControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Mock ExecutionResult 생성
+        // Mock 객체 설정
         mockExecutionResult = new ExecutionResult<>();
         mockExecutionResult.setTaskName("Test Synchronization");
         mockExecutionResult.setThreadName("test-thread");
@@ -52,7 +52,6 @@ class SynchronizationControllerTest {
         mockExecutionResult.setSuccess(true);
         mockExecutionResult.setResult("synchronized 블록 처리 완료 - 1");
 
-        // Mock ComparisonResult 생성
         mockComparisonResult = new ComparisonResult<>("동기화 방법 비교", 20);
         mockComparisonResult.setVirtualThreadResults(Arrays.asList(mockExecutionResult));
         mockComparisonResult.setPlatformThreadResults(Arrays.asList(mockExecutionResult));
@@ -62,6 +61,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
+    @DisplayName("🔒⚠️ synchronized 블록 테스트 - 10개 작업(200ms 대기)으로 가상 스레드 핀닝 현상 확인")
     void testSynchronizedBlock() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);
@@ -78,6 +78,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
+    @DisplayName("🔒⚠️📋 synchronized 블록 기본값 - 기본 20개 작업(100ms 대기)으로 핀닝 검증")
     void testSynchronizedBlockWithDefaultParams() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);
@@ -90,6 +91,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
+    @DisplayName("🔓✅ ReentrantLock 테스트 - 15개 작업(150ms 대기)으로 핀닝 회피 효과 확인")
     void testReentrantLock() throws Exception {
         // Given
         ExecutionResult<String> lockResult = new ExecutionResult<>();
@@ -111,6 +113,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
+    @DisplayName("🔓✅📋 ReentrantLock 기본값 - 기본 20개 작업(100ms 대기)으로 성능 유지 확인")
     void testReentrantLockWithDefaultParams() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);
@@ -123,6 +126,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️ 동기화 방법 성능 비교 - 25개 작업(120ms)으로 synchronized vs ReentrantLock 핀닝 효과 분석")
     void testCompareSynchronizationMethods() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);
@@ -143,6 +147,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️📋 동기화 방법 성능 비교 기본값 - 기본 20개 작업(100ms)으로 핀닝 영향도 벤치마크")
     void testCompareSynchronizationMethodsWithDefaultParams() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);
@@ -159,6 +164,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
+    @DisplayName("📌 핀닝 현상 직접 감지 - 5개 작업(300ms 대기)으로 synchronized 블록의 핀닝 효과 시뮬레이션")
     void testPinningDetection() throws Exception {
         // Given - 핀닝 현상 시뮬레이션
         ExecutionResult<String> pinnedResult = new ExecutionResult<>();
@@ -180,6 +186,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
+    @DisplayName("⏰ 장시간 동기화 테스트 - 5개 작업(1000ms 대기)으로 긴 블로킹에서의 핀닝 영향 측정")
     void testLongRunningSync() throws Exception {
         // Given - 긴 실행 시간의 동기화 테스트
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);
@@ -194,6 +201,7 @@ class SynchronizationControllerTest {
     }
 
     @Test
+    @DisplayName("⚡ 즉시 동기화 테스트 - 10개 작업(0ms 대기)으로 순수 락 경합 상황에서의 핀닝 효과")
     void testZeroSleepTime() throws Exception {
         // Given - 대기 시간이 없는 경우
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);

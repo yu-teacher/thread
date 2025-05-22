@@ -7,10 +7,10 @@ import com.hunnit_beasts.thread.service.DatabaseService;
 import com.hunnit_beasts.thread.util.ComparisonResult;
 import com.hunnit_beasts.thread.util.ExecutionResult;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
@@ -29,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("🗄️ 데이터베이스 컨트롤러 테스트")
 class DatabaseControllerTest {
 
     @Autowired
@@ -46,11 +47,10 @@ class DatabaseControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Mock User 생성
+        // Mock 객체 설정
         mockUser = new User("testUser", "test@example.com");
         mockUser.setId(1L);
 
-        // Mock ExecutionResult 생성
         mockExecutionResult = new ExecutionResult<>();
         mockExecutionResult.setTaskName("Test DB Query");
         mockExecutionResult.setThreadName("test-thread");
@@ -60,7 +60,6 @@ class DatabaseControllerTest {
         mockExecutionResult.setSuccess(true);
         mockExecutionResult.setResult(mockUser);
 
-        // Mock ComparisonResult 생성
         mockComparisonResult = new ComparisonResult<>("데이터베이스 쿼리 비교", 10);
         mockComparisonResult.setVirtualThreadResults(Arrays.asList(mockExecutionResult));
         mockComparisonResult.setPlatformThreadResults(Arrays.asList(mockExecutionResult));
@@ -70,6 +69,7 @@ class DatabaseControllerTest {
     }
 
     @Test
+    @DisplayName("🚀 데이터베이스 초기화 - 사용자 및 제품 테스트 데이터 생성")
     void testInitializeData() throws Exception {
         // Given
         doNothing().when(databaseService).initializeTestData();
@@ -81,6 +81,7 @@ class DatabaseControllerTest {
     }
 
     @Test
+    @DisplayName("👤 단일 사용자 조회 - ID로 특정 사용자 정보 조회")
     void testGetSingleUser() throws Exception {
         // Given
         when(databaseService.getSingleUser(anyLong())).thenReturn(mockUser);
@@ -95,6 +96,7 @@ class DatabaseControllerTest {
     }
 
     @Test
+    @DisplayName("👥 배치 사용자 조회 - 5명의 사용자를 가상 스레드로 동시 조회")
     void testBatchGetUsers() throws Exception {
         // Given
         List<ExecutionResult<User>> mockResults = Arrays.asList(mockExecutionResult);
@@ -110,6 +112,7 @@ class DatabaseControllerTest {
     }
 
     @Test
+    @DisplayName("👥📋 배치 사용자 조회 기본값 - 기본 10명 사용자 조회")
     void testBatchGetUsersWithDefaultCount() throws Exception {
         // Given
         List<ExecutionResult<User>> mockResults = Arrays.asList(mockExecutionResult);
@@ -122,6 +125,7 @@ class DatabaseControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️ DB 쿼리 성능 비교 - 30개 쿼리로 가상 vs 플랫폼 스레드 성능 측정")
     void testCompareDbQueries() throws Exception {
         // Given
         List<ExecutionResult<User>> mockResults = Arrays.asList(mockExecutionResult);
@@ -139,6 +143,7 @@ class DatabaseControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️📋 DB 쿼리 성능 비교 기본값 - 기본 50개 쿼리로 벤치마크")
     void testCompareDbQueriesWithDefaultCount() throws Exception {
         // Given
         List<ExecutionResult<User>> mockResults = Arrays.asList(mockExecutionResult);
@@ -153,6 +158,7 @@ class DatabaseControllerTest {
     }
 
     @Test
+    @DisplayName("❌ 존재하지 않는 사용자 조회 - 잘못된 ID로 조회 시 처리")
     void testGetSingleUserWithInvalidId() throws Exception {
         // Given
         when(databaseService.getSingleUser(999L)).thenReturn(null);

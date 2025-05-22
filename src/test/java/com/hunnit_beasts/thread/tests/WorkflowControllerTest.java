@@ -5,14 +5,13 @@ import com.hunnit_beasts.thread.service.WorkflowService;
 import com.hunnit_beasts.thread.util.ComparisonResult;
 import com.hunnit_beasts.thread.util.ExecutionResult;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -25,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("🔄 워크플로우 컨트롤러 테스트 - 실제 비즈니스 로직에서의 가상 스레드 효과 검증")
 class WorkflowControllerTest {
 
     @Autowired
@@ -72,6 +72,7 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("🔄📋 간단한 워크플로우 실행 - 3개의 기본 워크플로우 (API호출→DB저장→파일기록) 순차 처리")
     void testRunSimpleWorkflows() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockSimpleWorkflowResult);
@@ -88,6 +89,7 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("🔄📋📊 간단한 워크플로우 기본값 - 기본 5개 워크플로우로 가상 스레드 복합 작업 효율성 측정")
     void testRunSimpleWorkflowsWithDefaultCount() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockSimpleWorkflowResult);
@@ -100,6 +102,7 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("🔄🔥 복잡한 워크플로우 실행 - 2개의 고도화 워크플로우 (다중API→DB조회/저장→대용량파일) 병렬 처리")
     void testRunComplexWorkflows() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockComplexWorkflowResult);
@@ -116,6 +119,7 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("🔄🔥📊 복잡한 워크플로우 기본값 - 기본 3개 복잡한 워크플로우로 엔터프라이즈급 성능 벤치마크")
     void testRunComplexWorkflowsWithDefaultCount() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockComplexWorkflowResult);
@@ -128,6 +132,7 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️📋 간단한 워크플로우 성능 비교 - 4개 워크플로우로 가상 vs 플랫폼 스레드 복합 I/O 효율성 분석")
     void testCompareSimpleWorkflows() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockSimpleWorkflowResult);
@@ -146,6 +151,7 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️🔥 복잡한 워크플로우 성능 비교 - 3개 고부하 워크플로우로 실제 운영환경 시뮬레이션 및 성능 차이 검증")
     void testCompareComplexWorkflows() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockComplexWorkflowResult);
@@ -171,6 +177,7 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️📊 워크플로우 성능 비교 기본값 - 기본 설정(간단 워크플로우 5개)으로 표준 비즈니스 로직 성능 기준 측정")
     void testCompareWorkflowsWithDefaultParams() throws Exception {
         // Given - 기본값: simple workflow, count=5
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockSimpleWorkflowResult);
@@ -186,6 +193,7 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("🔄❌ 잘못된 워크플로우 타입 처리 - 유효하지 않은 타입 입력 시 기본 simple 워크플로우로 안전한 폴백 처리")
     void testCompareInvalidWorkflowType() throws Exception {
         // Given - invalid type, should default to simple
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockSimpleWorkflowResult);
@@ -203,8 +211,9 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("🔄📈 대규모 워크플로우 확장성 테스트 - 50개 워크플로우로 가상 스레드의 대용량 비즈니스 로직 처리 한계 검증")
     void testWorkflowWithLargeCount() throws Exception {
-        // Given - 큰 개수로 테스트
+        // Given - 대규모 워크플로우 테스트
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockSimpleWorkflowResult);
         when(workflowService.runMultipleSimpleWorkflowsWithVirtualThread(50)).thenReturn(mockResults);
 
@@ -216,6 +225,7 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("📊⏱️ 워크플로우 성능 메트릭 정밀 검증 - 5초 소요 워크플로우의 실행 시간 측정 정확성 및 성능 데이터 수집")
     void testWorkflowPerformanceMetrics() throws Exception {
         // Given - 성능 메트릭 검증을 위한 테스트
         ExecutionResult<String> slowResult = new ExecutionResult<>();
@@ -236,6 +246,7 @@ class WorkflowControllerTest {
     }
 
     @Test
+    @DisplayName("🔄💥 워크플로우 실패 시나리오 처리 - 실패한 워크플로우의 오류 메시지, 상태 코드 및 복구 메커니즘 검증")
     void testWorkflowFailureHandling() throws Exception {
         // Given - 실패한 워크플로우 결과
         ExecutionResult<String> failedResult = new ExecutionResult<>();

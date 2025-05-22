@@ -7,10 +7,10 @@ import com.hunnit_beasts.thread.service.ApiCallService;
 import com.hunnit_beasts.thread.util.ComparisonResult;
 import com.hunnit_beasts.thread.util.ExecutionResult;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("🌐 API 호출 컨트롤러 테스트")
 class ApiCallControllerTest {
 
     @Autowired
@@ -43,11 +44,9 @@ class ApiCallControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Mock ApiResponse 생성
+        // Mock 객체 설정
         mockApiResponse = new ApiResponse();
-        // ApiResponse의 필드가 있다면 설정
 
-        // Mock ExecutionResult 생성
         mockExecutionResult = new ExecutionResult<>();
         mockExecutionResult.setTaskName("Test API Call");
         mockExecutionResult.setThreadName("test-thread");
@@ -57,7 +56,6 @@ class ApiCallControllerTest {
         mockExecutionResult.setSuccess(true);
         mockExecutionResult.setResult(mockApiResponse);
 
-        // Mock ComparisonResult 생성
         mockComparisonResult = new ComparisonResult<>("API 호출 비교", 10);
         mockComparisonResult.setVirtualThreadResults(Arrays.asList(mockExecutionResult));
         mockComparisonResult.setPlatformThreadResults(Arrays.asList(mockExecutionResult));
@@ -67,6 +65,7 @@ class ApiCallControllerTest {
     }
 
     @Test
+    @DisplayName("📡 단일 API 호출 - JSONPlaceholder에서 단일 포스트 조회")
     void testSingleApiCall() throws Exception {
         // Given
         when(apiCallService.callSingleApi(1)).thenReturn(mockApiResponse);
@@ -78,6 +77,7 @@ class ApiCallControllerTest {
     }
 
     @Test
+    @DisplayName("📡🔢 다중 API 호출 - 5개의 동시 API 호출 처리 (가상 스레드)")
     void testMultipleApiCalls() throws Exception {
         // Given
         List<ExecutionResult<ApiResponse>> mockResults = Arrays.asList(mockExecutionResult);
@@ -93,6 +93,7 @@ class ApiCallControllerTest {
     }
 
     @Test
+    @DisplayName("📡🔢📋 다중 API 호출 기본값 - 기본 10개 요청으로 가상 스레드 동작 확인")
     void testMultipleApiCallsWithDefaultCount() throws Exception {
         // Given
         List<ExecutionResult<ApiResponse>> mockResults = Arrays.asList(mockExecutionResult);
@@ -105,6 +106,7 @@ class ApiCallControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️ API 호출 성능 비교 - 20개 요청으로 가상 vs 플랫폼 스레드 성능 측정")
     void testCompareApiCalls() throws Exception {
         // Given
         List<ExecutionResult<ApiResponse>> mockResults = Arrays.asList(mockExecutionResult);
@@ -122,6 +124,7 @@ class ApiCallControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️📋 API 호출 성능 비교 기본값 - 기본 50개 요청으로 성능 벤치마크")
     void testCompareApiCallsWithDefaultCount() throws Exception {
         // Given
         List<ExecutionResult<ApiResponse>> mockResults = Arrays.asList(mockExecutionResult);

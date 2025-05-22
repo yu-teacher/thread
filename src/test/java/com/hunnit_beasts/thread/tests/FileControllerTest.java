@@ -5,14 +5,13 @@ import com.hunnit_beasts.thread.service.FileService;
 import com.hunnit_beasts.thread.util.ComparisonResult;
 import com.hunnit_beasts.thread.util.ExecutionResult;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -24,10 +23,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("📁 파일 I/O 컨트롤러 테스트")
 class FileControllerTest {
 
     @Autowired
@@ -44,7 +43,7 @@ class FileControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Mock ExecutionResult 생성
+        // Mock 객체 설정
         mockExecutionResult = new ExecutionResult<>();
         mockExecutionResult.setTaskName("Test File Processing");
         mockExecutionResult.setThreadName("test-thread");
@@ -54,7 +53,6 @@ class FileControllerTest {
         mockExecutionResult.setSuccess(true);
         mockExecutionResult.setResult("test-file.txt");
 
-        // Mock ComparisonResult 생성
         mockComparisonResult = new ComparisonResult<>("파일 처리 비교", 20);
         mockComparisonResult.setVirtualThreadResults(Arrays.asList(mockExecutionResult));
         mockComparisonResult.setPlatformThreadResults(Arrays.asList(mockExecutionResult));
@@ -64,6 +62,7 @@ class FileControllerTest {
     }
 
     @Test
+    @DisplayName("💾 파일 생성 - 50KB 크기의 테스트 파일 생성")
     void testWriteFile() throws Exception {
         // Given
         when(fileService.writeFile(anyString(), anyInt())).thenReturn("/tmp/test.txt");
@@ -77,6 +76,7 @@ class FileControllerTest {
     }
 
     @Test
+    @DisplayName("💾📋 파일 생성 기본값 - 기본 100KB 파일 생성")
     void testWriteFileWithDefaultParams() throws Exception {
         // Given
         when(fileService.writeFile("test.txt", 100)).thenReturn("/tmp/test.txt");
@@ -88,6 +88,7 @@ class FileControllerTest {
     }
 
     @Test
+    @DisplayName("📖 파일 읽기 - 기존 파일 내용 읽기")
     void testReadFile() throws Exception {
         // Given
         String mockFileContent = "This is test file content";
@@ -100,6 +101,7 @@ class FileControllerTest {
     }
 
     @Test
+    @DisplayName("📁🔢 배치 파일 처리 - 5개 파일(200KB 각각)을 가상 스레드로 동시 처리")
     void testBatchProcessFiles() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);
@@ -116,6 +118,7 @@ class FileControllerTest {
     }
 
     @Test
+    @DisplayName("📁🔢📋 배치 파일 처리 기본값 - 기본 10개 파일(100KB 각각) 처리")
     void testBatchProcessFilesWithDefaultParams() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);
@@ -128,6 +131,7 @@ class FileControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️ 파일 처리 성능 비교 - 15개 파일(300KB 각각) 처리로 가상 vs 플랫폼 스레드 성능 측정")
     void testCompareFileProcessing() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);
@@ -146,6 +150,7 @@ class FileControllerTest {
     }
 
     @Test
+    @DisplayName("⚔️📋 파일 처리 성능 비교 기본값 - 기본 20개 파일(100KB 각각)로 벤치마크")
     void testCompareFileProcessingWithDefaultParams() throws Exception {
         // Given
         List<ExecutionResult<String>> mockResults = Arrays.asList(mockExecutionResult);
@@ -158,5 +163,4 @@ class FileControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.taskCount").value(20));
     }
-
 }
