@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 호출 시나리오 - 가상 스레드 테스트</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="../index.html">가상 스레드 테스트 대시보드</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="../index.html">홈</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../results.html">결과</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../about.html">정보</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <h2 class="mb-4">API 호출 시나리오</h2>
+    <p class="lead">이 시나리오는 외부 API 호출 시 가상 스레드와 플랫폼 스레드의 성능 차이를 테스트합니다.</p>
+
+    <div class="card mb-4">
+        <div class="card-header">테스트 설정</div>
+        <div class="card-body">
+            <form id="apiTestForm">
+                <div class="mb-3">
+                    <label for="apiCallCount" class="form-label">API 호출 횟수</label>
+                    <input type="range" class="form-range" id="apiCallCount" min="1" max="100" value="50">
+                    <div class="text-center" id="apiCallCountValue">50</div>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">테스트 실행</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mb-4" id="testResult" style="display: none;">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    테스트 결과
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <strong>테스트 정보:</strong> <span id="testInfo"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">가상 스레드</div>
+                                <div class="card-body">
+                                    <p><strong>총 실행 시간:</strong> <span id="virtualThreadTime"></span>ms</p>
+                                    <p><strong>처리된 요청 수:</strong> <span id="virtualThreadCount"></span></p>
+                                    <p><strong>평균 응답 시간:</strong> <span id="virtualThreadAvg"></span>ms</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-secondary text-white">플랫폼 스레드</div>
+                                <div class="card-body">
+                                    <p><strong>총 실행 시간:</strong> <span id="platformThreadTime"></span>ms</p>
+                                    <p><strong>처리된 요청 수:</strong> <span id="platformThreadCount"></span></p>
+                                    <p><strong>평균 응답 시간:</strong> <span id="platformThreadAvg"></span>ms</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">성능 비교</div>
+                                <div class="card-body">
+                                    <p><strong>속도 향상:</strong> <span id="speedupFactor"></span>배</p>
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar" id="comparisonBar" role="progressbar" style="width: 50%"></div>
+                                    </div>
+                                    <canvas id="comparisonChart" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4 mb-4" id="loadingIndicator" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">로딩 중...</span>
+        </div>
+        <span class="ms-2">테스트 실행 중...</span>
+    </div>
+
+    <div class="alert alert-danger" id="errorMessage" style="display: none;"></div>
+</div>
+
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+        <span class="text-muted">Java 21 가상 스레드 테스트 애플리케이션 &copy; 2025</span>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="../js/api-call.js"></script>
+</body>
+</html>
